@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Peça online</title>
+<meta name="description" content="Faça seu pedido online: pizzas inteiras ou meio a meio, entrega ou retirada.">
+<meta name="theme-color" content="#C8381E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF6EE; --card: #FFFFFF; --ink: #2A1E17; --muted: #7A6A5F; --line: #ECE2D4; --line2: #F3ECE2;
+    --red: #C8381E; --red-dark: #A42D15; --red-soft: #FBE8E2;
+    --green: #2E8B57; --green-soft: #E3F2E9; --amber: #A86A12; --amber-soft: #FCF1DE;
+    --radius: 18px; --shadow: 0 1px 2px rgba(42,30,23,.05), 0 10px 30px rgba(42,30,23,.07);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--ink); font: 16px/1.45 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+  body.lock { overflow: hidden; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  a { color: inherit; }
+  [hidden] { display: none !important; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+  .center { text-align: center; }
+  .demo-bar { background: var(--ink); color: #FBF6EE; font-size: 13px; text-align: center; padding: 7px 16px; }
+
+  /* topo */
+  .top { position: sticky; top: 0; z-index: 20; background: rgba(251,246,238,.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .top-in { display: flex; align-items: center; justify-content: space-between; height: 58px; gap: 10px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; min-width: 0; }
+  .brand span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .logo { width: 34px; height: 34px; border-radius: 50%; background: var(--red); display: grid; place-items: center; flex: none; }
+  .logo svg { width: 20px; height: 20px; }
+  .top-actions { display: flex; gap: 2px; flex: none; }
+  .link { background: none; border: 0; padding: 8px 9px; border-radius: 10px; font-size: 15px; font-weight: 600; color: var(--muted); text-decoration: none; }
+  .link:hover { background: var(--line); color: var(--ink); }
+  .link.strong { color: var(--red); }
+
+  .hero { padding-top: 24px; padding-bottom: 4px; }
+  .hero h1 { font-family: Fraunces, Georgia, serif; font-weight: 800; font-size: clamp(32px, 8.5vw, 50px); line-height: 1.03; letter-spacing: -.02em; margin: 0 0 12px; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; color: var(--muted); font-size: 14px; }
+  .pill { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; padding: 5px 11px; border-radius: 999px; font-size: 13px; }
+  .pill i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .pill.ok { background: var(--green-soft); color: var(--green); }
+  .pill.off { background: var(--red-soft); color: var(--red-dark); }
+
+  /* busca + categorias */
+  .finder { position: sticky; top: 58px; z-index: 15; background: var(--bg); padding: 12px 0 8px; }
+  .search { position: relative; }
+  .search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--muted); pointer-events: none; }
+  .search input { width: 100%; border: 1px solid var(--line); background: var(--card); border-radius: 14px; padding: 13px 40px 13px 42px; font-size: 16px; outline: none; }
+  .search input:focus { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-soft); }
+  .search .clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: var(--line); width: 30px; height: 30px; border-radius: 50%; font-size: 18px; line-height: 1; }
+  .cats-in { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-top: 10px; }
+  .cats-in::-webkit-scrollbar { display: none; }
+  .chip { flex: none; border: 1px solid var(--line); background: var(--card); padding: 7px 14px; border-radius: 999px; font-size: 14px; font-weight: 600; }
+  .chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .cat { padding-top: 14px; scroll-margin-top: 190px; }
+  .cat h2 { font-family: Fraunces, Georgia, serif; font-size: 24px; margin: 6px 0 2px; letter-spacing: -.01em; }
+  .hint { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+  .list { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .row { display: flex; gap: 12px; align-items: flex-start; width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--line2); padding: 14px 14px; }
+  .row:first-child { border-top: 0; }
+  .row:hover { background: #FFFCF8; }
+  .num { flex: none; min-width: 34px; height: 26px; padding: 0 6px; border-radius: 8px; background: var(--red-soft); color: var(--red-dark); font-size: 13px; font-weight: 700; display: grid; place-items: center; font-variant-numeric: tabular-nums; margin-top: 1px; }
+  .row-txt { flex: 1; min-width: 0; display: grid; gap: 2px; }
+  .row-txt b { font-size: 16px; }
+  .row-txt span { color: var(--muted); font-size: 14px; }
+  .prices { font-size: 13px; font-weight: 600; color: var(--ink); margin-top: 3px; }
+  .prices i { font-style: normal; color: var(--muted); font-weight: 500; }
+  .plus { flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--red-soft); color: var(--red); display: grid; place-items: center; font-size: 22px; align-self: center; }
+  .spacer { height: 110px; }
+  .empty { color: var(--muted); text-align: center; padding: 40px 0; }
+
+  .cart-bar { position: fixed; z-index: 30; left: 50%; transform: translateX(-50%); bottom: max(16px, env(safe-area-inset-bottom)); width: min(688px, calc(100% - 32px)); display: flex; align-items: center; gap: 12px; background: var(--red); color: #fff; border: 0; border-radius: 16px; padding: 15px 18px; font-weight: 600; box-shadow: 0 10px 30px rgba(200,56,30,.35); }
+  .cart-bar b { margin-left: auto; }
+  .cart-bar .n { background: rgba(255,255,255,.22); border-radius: 8px; min-width: 28px; height: 28px; display: grid; place-items: center; padding: 0 6px; }
+
+  /* folhas */
+  .sheet-bg { position: fixed; inset: 0; z-index: 50; background: rgba(42,30,23,.45); display: flex; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity .2s; }
+  .sheet-bg.open { opacity: 1; }
+  .sheet { background: var(--bg); width: 100%; max-width: 560px; max-height: 94vh; overflow-y: auto; border-radius: 22px 22px 0 0; padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); transform: translateY(30px); transition: transform .22s; overscroll-behavior: contain; }
+  .sheet-bg.open .sheet { transform: none; }
+  @media (min-width: 640px) { .sheet-bg { align-items: center; } .sheet { border-radius: 22px; padding: 24px; } }
+  .sheet-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+  .sheet-head h3 { font-family: Fraunces, Georgia, serif; font-size: 26px; line-height: 1.1; margin: 0; }
+  .sheet-head .num { margin-top: 5px; }
+  .x, .backbtn { background: var(--line); border: 0; width: 36px; height: 36px; border-radius: 50%; font-size: 22px; line-height: 1; flex: none; }
+  .sec { margin-top: 18px; }
+  .sec > b { display: block; font-size: 14px; margin-bottom: 8px; }
+  .sec > b small { font-weight: 500; color: var(--muted); }
+
+  .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--line); border-radius: 14px; padding: 4px; gap: 4px; }
+  .seg button { border: 0; background: none; padding: 9px 6px; border-radius: 11px; font-weight: 600; color: var(--muted); display: grid; gap: 1px; }
+  .seg button small { font-size: 12px; font-weight: 600; }
+  .seg button.on { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .seg button:disabled { opacity: .45; cursor: default; }
+
+  .halves { display: grid; gap: 8px; margin-top: 10px; }
+  .half { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; width: 100%; text-align: left; }
+  .half .tag { flex: none; font-size: 12px; font-weight: 700; color: var(--muted); width: 54px; }
+  .half .who { flex: 1; min-width: 0; display: grid; }
+  .half .who b { font-size: 15px; }
+  .half .who span { color: var(--muted); font-size: 13px; }
+  .half.pick { border: 2px dashed #E7B8AA; background: var(--red-soft); color: var(--red-dark); font-weight: 700; justify-content: center; padding: 15px; }
+  .half .chg { color: var(--red); font-weight: 700; font-size: 14px; flex: none; }
+
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opt-chip { border: 1px solid var(--line); background: var(--card); border-radius: 12px; padding: 9px 12px; font-size: 14px; font-weight: 600; }
+  .opt-chip small { color: var(--muted); font-weight: 500; }
+  .opt-chip.on { border-color: var(--red); background: var(--red-soft); color: var(--red-dark); }
+
+  .field { display: grid; gap: 6px; margin: 12px 0 0; align-content: start; }
+  .field > span { font-weight: 600; font-size: 14px; }
+  .field small { color: var(--muted); font-size: 13px; }
+  .field input, .field textarea { width: 100%; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 13px; font-size: 16px; outline: none; }
+  .field textarea { resize: vertical; }
+  .field input:focus, .field textarea:focus { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-soft); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+  .grid-addr { display: grid; grid-template-columns: 1fr 110px; gap: 0 10px; }
+  .legend { font-family: Fraunces, Georgia, serif; font-size: 19px; margin: 22px 0 0; }
+
+  .btn { border: 0; border-radius: 14px; padding: 14px 18px; font-weight: 700; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+  .btn.primary { background: var(--red); color: #fff; }
+  .btn.primary:hover { background: var(--red-dark); }
+  .btn.primary:disabled { opacity: .55; cursor: default; }
+  .btn.ghost { background: var(--card); border: 1px solid var(--line); }
+  .btn.block { width: 100%; }
+  .btn.sm { padding: 8px 12px; font-size: 14px; border-radius: 10px; }
+  .row-between { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 20px; }
+  .row-between .btn { flex: 1; }
+  .stepper { display: inline-flex; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+  .stepper button { background: none; border: 0; width: 42px; height: 46px; font-size: 22px; color: var(--red); }
+  .stepper b { min-width: 26px; text-align: center; }
+  .stepper.sm button { width: 34px; height: 36px; font-size: 19px; }
+
+  /* seletor do 2º sabor */
+  .picker-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .picker-head h3 { font-family: Fraunces, Georgia, serif; font-size: 22px; margin: 0; }
+  .picker-list { margin-top: 10px; }
+  .picker-list .row { padding: 12px; }
+
+  /* carrinho */
+  .cart-items { margin: 10px 0 4px; }
+  .ci { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .ci-txt { flex: 1; display: grid; gap: 1px; min-width: 0; }
+  .ci-txt span { color: var(--muted); font-size: 13px; }
+  .ci-txt em { font-style: normal; font-size: 14px; font-weight: 600; }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: flex; gap: 12px; align-items: center; margin-top: 10px; }
+  .box > div { flex: 1; min-width: 0; display: grid; gap: 1px; }
+  .box span { color: var(--muted); font-size: 13px; }
+  .box.warnbox { background: var(--amber-soft); border-color: #F1D9AE; }
+  .pay { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .opt { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; cursor: pointer; }
+  .opt input { accent-color: var(--red); width: 18px; height: 18px; margin: 0; }
+  .opt b { display: block; font-size: 15px; }
+  .opt span { color: var(--muted); font-size: 13px; }
+  .opt:has(input:checked) { border-color: var(--red); box-shadow: 0 0 0 2px var(--red-soft); }
+  .sum { margin: 18px 0 14px; display: grid; gap: 6px; }
+  .sum div { display: flex; justify-content: space-between; color: var(--muted); }
+  .sum .tot { color: var(--ink); font-weight: 700; font-size: 19px; padding-top: 8px; border-top: 1px dashed var(--line); }
+  .err { background: var(--red-soft); color: var(--red-dark); border-radius: 12px; padding: 10px 13px; font-size: 14px; font-weight: 500; margin: 12px 0; }
+  .note { text-align: center; color: var(--red-dark); font-size: 14px; font-weight: 600; }
+  .tabs2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 14px 0 2px; }
+  .tabs2 button { border: 1px solid var(--line); background: var(--card); border-radius: 12px; padding: 10px; font-weight: 600; color: var(--muted); }
+  .tabs2 button.on { border-color: var(--ink); color: var(--ink); }
+
+  /* pedido */
+  .back { display: inline-block; margin: 20px 0 12px; color: var(--muted); text-decoration: none; font-weight: 600; font-size: 15px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); margin-bottom: 12px; }
+  .card h3 { margin: 0 0 10px; font-size: 17px; }
+  .order-head { display: flex; justify-content: space-between; align-items: end; }
+  .order-head h2 { font-family: Fraunces, Georgia, serif; font-size: 40px; margin: 0; line-height: 1; }
+  .steps { list-style: none; padding: 0; margin: 0; }
+  .steps li { display: flex; align-items: center; gap: 12px; padding: 9px 0; color: var(--muted); position: relative; }
+  .steps li i { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); background: var(--card); flex: none; position: relative; z-index: 1; display: grid; place-items: center; }
+  .steps li:not(:last-child)::after { content: ""; position: absolute; left: 10px; top: 31px; height: 18px; width: 2px; background: var(--line); }
+  .steps li.done { color: var(--ink); }
+  .steps li.done i { background: var(--green); border-color: var(--green); }
+  .steps li.done i::after { content: ""; width: 6px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -1px); }
+  .steps li.done:not(:last-child)::after { background: var(--green); }
+  .steps li.now { color: var(--ink); font-weight: 700; }
+  .steps li.now i { border-color: var(--red); background: var(--red); box-shadow: 0 0 0 5px var(--red-soft); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 9px rgba(200,56,30,.08); } }
+  .line { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; }
+  .line small { display: block; color: var(--muted); }
+  .line.sub { color: var(--muted); font-size: 14px; padding: 2px 0; }
+  .line.tot { font-weight: 700; font-size: 18px; border-top: 1px dashed var(--line); margin-top: 6px; padding-top: 10px; }
+  .alert { background: var(--red-soft); border-color: #F3C9BD; color: var(--red-dark); font-weight: 600; }
+  .paid { background: var(--green-soft); border-color: #BFE3CD; color: var(--green); font-weight: 700; }
+  .warn { background: var(--amber-soft); border-color: #F1D9AE; color: var(--amber); font-weight: 600; }
+  .pix .qr { display: grid; place-items: center; margin: 8px 0 12px; }
+  .pix .qr img { width: 220px; height: 220px; image-rendering: pixelated; border-radius: 10px; }
+  .pix textarea { width: 100%; font: 12px/1.4 ui-monospace, Menlo, Consolas, monospace; border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: var(--bg); resize: none; margin-bottom: 10px; word-break: break-all; }
+  .olist { display: grid; gap: 10px; }
+  .orow { display: flex; justify-content: space-between; align-items: center; gap: 12px; text-decoration: none; }
+  .badge { font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 999px; background: var(--line); color: var(--muted); white-space: nowrap; }
+  .badge.novo, .badge.preparo, .badge.entrega { background: var(--amber-soft); color: var(--amber); }
+  .badge.concluido { background: var(--green-soft); color: var(--green); }
+  .badge.cancelado { background: var(--red-soft); color: var(--red-dark); }
+
+  .toast { position: fixed; z-index: 60; left: 50%; top: 70px; transform: translate(-50%, -12px); background: var(--ink); color: #fff; padding: 11px 16px; border-radius: 12px; font-size: 14px; font-weight: 500; opacity: 0; pointer-events: none; transition: .2s; max-width: calc(100% - 32px); }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast.err { background: var(--red-dark); }
+  .loading { padding: 50px 0; text-align: center; color: var(--muted); }
+  .field select { width: 100%; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 13px; font-size: 16px; outline: none; }
+  .bk { font-size: 13px; font-weight: 700; color: var(--red-dark); margin: 12px 0 6px; }
+  .tip { margin-top: 16px; background: var(--green-soft); border: 1px solid #BFE3CD; border-radius: 14px; padding: 13px 14px; display: grid; gap: 8px; font-size: 14px; }
+  .tip > b { color: var(--green); }
+  .tip .btn { justify-self: start; }
+  .btn.green { background: var(--green); color: #fff; }
+  .addr-line { flex-basis: 100%; font-size: 13px; }
+  .thumb { flex: none; width: 64px; height: 64px; border-radius: 14px; background: #F7F0E6; display: grid; place-items: center; overflow: hidden; }
+  .thumb svg { width: 52px; height: 52px; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .row { align-items: center; }
+  .row.static { cursor: default; padding: 12px 14px; }
+  .row.static:hover { background: none; }
+  .bprice { font-weight: 700; font-size: 14px; white-space: nowrap; }
+  .subcat { font-size: 16px; margin: 16px 0 8px; }
+  .subcat small { font-weight: 500; color: var(--muted); }
+  .sheet-head .thumb { width: 52px; height: 52px; border-radius: 12px; }
+  .sheet-head .thumb svg { width: 42px; height: 42px; }
+</style>
+</head>
+<body>
+<div class="demo-bar" id="demoBar" hidden>Modo demonstração: os pedidos ficam salvos só neste navegador.</div>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3c4.2 0 7.7 1.7 8.6 3.1L12 21 3.4 6.1C4.3 4.7 7.8 3 12 3Z" fill="#FBD38D"/><path d="M3.4 6.1C4.3 4.7 7.8 3 12 3s7.7 1.7 8.6 3.1" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="9" r="1.5" fill="#C8381E"/><circle cx="14.2" cy="11.3" r="1.5" fill="#C8381E"/><circle cx="11.6" cy="14.6" r="1.3" fill="#C8381E"/></svg>
+      </span>
+      <span id="brandName">Carregando…</span>
+    </a>
+    <div class="top-actions" id="topActions"></div>
+  </div>
+</header>
+
+<main id="viewMenu">
+  <section class="wrap hero">
+    <h1 id="storeName">&nbsp;</h1>
+    <div class="hero-meta" id="storeMeta"></div>
+  </section>
+  <div class="finder">
+    <div class="wrap">
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Buscar sabor, ingrediente ou nº" autocomplete="off" aria-label="Buscar no cardápio">
+        <button class="clear" id="qClear" type="button" aria-label="Limpar busca" hidden>×</button>
+      </label>
+      <div class="cats-in" id="catsIn"></div>
+    </div>
+  </div>
+  <div class="wrap" id="menu"><p class="loading">Carregando cardápio…</p></div>
+  <div class="spacer"></div>
+</main>
+<main id="viewOrder" hidden><div class="wrap" id="orderBox"></div></main>
+<main id="viewMine" hidden><div class="wrap" id="mineBox"></div></main>
+
+<button class="cart-bar" id="cartBar" hidden></button>
+
+<div class="sheet-bg" id="sheetBg" hidden>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script src="js/demo-data.js"></script>
+<script src="js/api.js"></script>
+<script>
+(function () {
+  'use strict';
+  const U = window.PizzaUtil;
+  const { money, esc, norm, waLink, pixPayload, onlyDigits, parseMoney, itemLabel, borderLabel, code2, priceFor, unitPrice, isSweet, formatAddress, SIZE_NAME } = U;
+  const api = window.pizzaApi;
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
+
+  const CART_KEY = 'pizzaria_cart_v3';
+  const S = { settings: null, products: [], borders: [], zones: [], session: null, profile: null, cart: loadCart(), draft: null, unsub: null, poll: null, query: '' };
+
+  /* ---------- utilidades ---------- */
+  function loadCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch (e) { return []; } }
+  function saveCart() { try { localStorage.setItem(CART_KEY, JSON.stringify(S.cart)); } catch (e) { /* ok */ } renderCartBar(); }
+  const cartCount = () => S.cart.reduce((a, i) => a + i.qty, 0);
+  const cartSubtotal = () => S.cart.reduce((a, i) => a + i.unit * i.qty, 0);
+  const byId = (id) => S.products.find((p) => p.id === Number(id));
+  const borderById = (id) => S.borders.find((b) => b.id === Number(id) && b.available) || null;
+  const pizzas = () => S.products.filter((p) => p.available && p.is_pizza);
+  const isDrink = (p) => /bebida/i.test(p.category || '');
+  const drinks = () => S.products.filter((p) => p.available && !p.is_pizza && isDrink(p));
+  const myZone = () => (S.profile && S.profile.zone_id ? S.zones.find((z) => z.id === Number(S.profile.zone_id)) || null : null);
+  const hasAddress = (p) => !!(p && p.street && p.number);
+  const fee = (ful) => (ful === 'entrega' ? (myZone() ? Number(myZone().fee) : 0) : 0);
+  const price = (p, size, h, b1, b2) => unitPrice(p, size, h, b1, b2, S.settings);
+
+  function toast(msg, kind) {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + (kind || '');
+    clearTimeout(toast.t);
+    toast.t = setTimeout(() => { t.className = 'toast'; }, 3000);
+  }
+
+  let sheetGen = 0;
+  function openSheet(html) {
+    sheetGen++;
+    const sh = $('#sheet');
+    sh.innerHTML = html;
+    sh.scrollTop = 0;
+    sh.style.minHeight = '';
+    const bg = $('#sheetBg');
+    if (bg.hidden) {
+      bg.hidden = false;
+      document.body.classList.add('lock');
+      requestAnimationFrame(() => requestAnimationFrame(() => bg.classList.add('open')));
+    }
+  }
+  function closeSheet() {
+    const gen = sheetGen;
+    const bg = $('#sheetBg');
+    bg.classList.remove('open');
+    document.body.classList.remove('lock');
+    setTimeout(() => { if (gen === sheetGen) { bg.hidden = true; $('#sheet').innerHTML = ''; } }, 220);
+  }
+  $('#sheetBg').addEventListener('click', (e) => { if (e.target.id === 'sheetBg' || e.target.closest('[data-close]')) closeSheet(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#sheetBg').hidden) closeSheet(); });
+
+  function matches(p, q) {
+    if (!q) return true;
+    if (/^\d+$/.test(q) && Number(q) === p.code) return true;
+    return norm(p.name).includes(q) || norm(p.description).includes(q);
+  }
+  function priceLine(p) {
+    if (!p.is_pizza) return money(p.price);
+    const parts = [`<i>Broto</i> ${money(priceFor(p, 'broto', S.settings))}`];
+    if (p.price_media != null) parts.push(`<i>Média</i> ${money(p.price_media)}`);
+    parts.push(`<i>Grande</i> ${money(p.price)}`);
+    return parts.join(' · ');
+  }
+  // imagem: foto cadastrada no painel ou ilustração em branco
+  const PIZZA_SVG = '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27" fill="#fff" stroke="#E4D6C3" stroke-width="5"/><circle cx="32" cy="32" r="22" fill="#fff" stroke="#EFE5D8" stroke-width="1.5"/><path d="M32 10v44M10 32h44M16.4 16.4l31.2 31.2M47.6 16.4 16.4 47.6" stroke="#EFE5D8" stroke-width="1.5"/></svg>';
+  const DRINK_SVG = '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M27 8h10v8l5 7v31a4 4 0 0 1-4 4H26a4 4 0 0 1-4-4V23l5-7Z" fill="#fff" stroke="#E4D6C3" stroke-width="3" stroke-linejoin="round"/><path d="M22 32h20v12H22z" fill="#F6EFE6"/></svg>';
+  const thumb = (p) => `<span class="thumb">${p.image_url ? `<img src="${esc(p.image_url)}" alt="" loading="lazy">` : (p.is_pizza ? PIZZA_SVG : DRINK_SVG)}</span>`;
+  const title = (p) => (p.code != null ? `${code2(p.code)} - ${p.name}` : p.name);
+  const rowHTML = (p, priceHTML, attr) => `
+    <button class="row" ${attr || `data-id="${p.id}"`}>
+      ${thumb(p)}
+      <span class="row-txt"><b>${esc(title(p))}</b>${p.description ? `<span>${esc(p.description)}</span>` : ''}<span class="prices">${priceHTML}</span></span>
+      <span class="plus" aria-hidden="true">+</span>
+    </button>`;
+
+  /* ---------- início ---------- */
+  async function init() {
+    if (!api) { $('#menu').innerHTML = `<p class="empty">${esc((window.pizzaApiError && window.pizzaApiError.message) || 'Erro ao iniciar.')}</p>`; return; }
+    if (api.demo) $('#demoBar').hidden = false;
+    try {
+      [S.settings, S.products, S.borders, S.zones] = await Promise.all([api.getSettings(), api.getProducts(), api.getBorders(), api.getZones()]);
+      S.zones = S.zones.filter((z) => z.available);
+      S.session = await api.getSession();
+      if (S.session) S.profile = await api.getProfile();
+    } catch (e) {
+      $('#menu').innerHTML = `<p class="empty">Não foi possível carregar o cardápio. ${esc(e.message)}</p>`;
+      return;
+    }
+    reconcileCart();
+    renderTop();
+    renderHero();
+    renderMenu();
+    route();
+    window.addEventListener('hashchange', route);
+  }
+
+  // recalcula preços do carrinho salvo e remove o que saiu do cardápio
+  function reconcileCart() {
+    S.cart = S.cart.filter((i) => {
+      const p = byId(i.product_id);
+      if (!p || !p.available) return false;
+      const h = i.half_id ? byId(i.half_id) : null;
+      if (i.half_id && (!h || !h.available)) return false;
+      const b1 = i.border_id ? borderById(i.border_id) : null;
+      const b2 = i.border2_id ? borderById(i.border2_id) : null;
+      if ((i.border_id && !b1) || (i.border2_id && !b2)) return false;
+      const u = price(p, i.size, h, b1, b2);
+      if (u == null) return false;
+      Object.assign(i, { name: p.name, half: h ? h.name : null, border: U.borderName(b1), border2: U.borderName(b2), unit: u });
+      return true;
+    });
+    saveCart();
+  }
+
+  function setView(v) {
+    $('#viewMenu').hidden = v !== 'menu';
+    $('#viewOrder').hidden = v !== 'order';
+    $('#viewMine').hidden = v !== 'mine';
+    renderCartBar();
+  }
+  function route() {
+    if (S.unsub) { S.unsub(); S.unsub = null; }
+    clearInterval(S.poll);
+    const h = location.hash;
+    const m = h.match(/^#pedido\/(\d+)$/);
+    if (m) { setView('order'); showOrder(Number(m[1])); }
+    else if (h === '#meus-pedidos') { setView('mine'); showMine(); }
+    else setView('menu');
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- topo e cardápio ---------- */
+  function renderTop() {
+    const a = $('#topActions');
+    a.innerHTML = S.session
+      ? `<a class="link" href="#meus-pedidos">Pedidos</a><button class="link" id="btnAcc">Minha conta</button>`
+      : `<button class="link strong" id="btnIn">Entrar</button>`;
+    if ($('#btnAcc')) $('#btnAcc').onclick = () => openProfile();
+    if ($('#btnIn')) $('#btnIn').onclick = () => openAuth();
+  }
+
+  function renderHero() {
+    const s = S.settings;
+    document.title = s.store_name + ' · Peça online';
+    $('#brandName').textContent = s.store_name;
+    $('#storeName').textContent = s.store_name;
+    const fees = S.zones.map((z) => Number(z.fee));
+    $('#storeMeta').innerHTML =
+      (s.is_open ? '<span class="pill ok"><i></i>Aberto agora</span>' : '<span class="pill off"><i></i>Fechado no momento</span>') +
+      (fees.length ? `<span>Entrega a partir de ${money(Math.min(...fees))}</span>` : '') + '<span>Retirada no balcão</span>' +
+      (s.store_address ? `<span class="addr-line">${esc(s.store_address)}</span>` : '');
+  }
+
+  function groups() {
+    const g = new Map();
+    for (const p of S.products) {
+      if (!p.available) continue;
+      if (!g.has(p.category)) g.set(p.category, []);
+      g.get(p.category).push(p);
+    }
+    return g;
+  }
+
+  function renderMenu() {
+    const q = norm(S.query.trim());
+    const g = groups();
+    const cats = [...g.keys()];
+    $('#catsIn').hidden = !!q;
+    $('#qClear').hidden = !q;
+    if (q) {
+      const found = S.products.filter((p) => p.available && matches(p, q));
+      $('#menu').innerHTML = `<section class="cat"><p class="hint">${found.length} ${found.length === 1 ? 'resultado' : 'resultados'} para "${esc(S.query.trim())}"</p>
+        ${found.length ? `<div class="list">${found.map((p) => rowHTML(p, priceLine(p))).join('')}</div>` : '<p class="empty">Nada encontrado. Tente outro nome ou ingrediente.</p>'}</section>`;
+      return;
+    }
+    // ordem: categorias de pizza, depois as bordas, depois o resto (bebidas etc.)
+    const pizzaCats = cats.filter((c) => g.get(c).some((p) => p.is_pizza));
+    const otherCats = cats.filter((c) => !pizzaCats.includes(c));
+    // bordas não aparecem no cardápio: o cliente escolhe ao montar a pizza
+    const bordas = [];
+    const sections = pizzaCats.map((c) => ({ c })).concat(otherCats.map((c) => ({ c })));
+    $('#catsIn').innerHTML = sections.map((x, i) => `<button class="chip${i === 0 ? ' on' : ''}" data-cat="${i}">${esc(x.bordas ? 'Bordas' : x.c)}</button>`).join('');
+    const pct = Number(S.settings.broto_percent || 50), extra = Number(S.settings.broto_half_extra || 0);
+    const bRow = (b) => `<div class="row static"><span class="row-txt"><b>${esc(b.name)}</b></span><span class="bprice">+${money(b.price)}</span></div>`;
+    $('#menu').innerHTML = sections.length ? sections.map((x, i) => {
+      if (x.bordas) {
+        const comum = bordas.filter((b) => b.kind !== 'vulcao'), vulcao = bordas.filter((b) => b.kind === 'vulcao');
+        return `<section class="cat" id="cat-${i}"><h2>Bordas recheadas</h2>
+          <p class="hint">Escolha a borda ao montar sua pizza. No meio a meio, cada metade pode ter uma borda diferente (vale a mais cara).</p>
+          ${comum.length ? `<div class="list">${comum.map(bRow).join('')}</div>` : ''}
+          ${vulcao.length ? `<h3 class="subcat">Borda vulcão <small>· só na pizza grande</small></h3><div class="list">${vulcao.map(bRow).join('')}</div>` : ''}</section>`;
+      }
+      const items = g.get(x.c);
+      const hint = i === 0 && items.some((p) => p.is_pizza)
+        ? `<p class="hint">Todas as pizzas acompanham molho especial, orégano e azeitonas. No meio a meio vale o preço do sabor mais caro. Broto: ${pct}% da grande${extra ? ` (+${money(extra)} no meio a meio)` : ''}.</p>` : '';
+      return `<section class="cat" id="cat-${i}"><h2>${esc(x.c)}</h2>${hint}
+        <div class="list">${items.map((p) => rowHTML(p, priceLine(p))).join('')}</div></section>`;
+    }).join('') : '<p class="empty">O cardápio ainda está vazio.</p>';
+  }
+
+  $('#q').addEventListener('input', (e) => { S.query = e.target.value; renderMenu(); });
+  $('#qClear').onclick = () => { $('#q').value = ''; S.query = ''; renderMenu(); $('#q').focus(); };
+  $('#catsIn').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-cat]');
+    if (!b) return;
+    $$('.chip').forEach((c) => c.classList.toggle('on', c === b));
+    $('#cat-' + b.dataset.cat).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  $('#menu').addEventListener('click', (e) => {
+    const b = e.target.closest('.row[data-id]');
+    if (b) openBuilder(byId(b.dataset.id));
+  });
+
+  function addToCart(o) {
+    const key = [o.product_id, o.size, o.half_id || 0, o.border_id || 0, o.border2_id || 0, o.obs || ''].join('|');
+    const same = S.cart.find((i) => i.key === key);
+    if (same) same.qty = Math.min(20, same.qty + o.qty);
+    else S.cart.push(Object.assign({ key }, o));
+    saveCart();
+  }
+
+  /* ---------- montar a pizza ---------- */
+  function openBuilder(p) {
+    if (!p) return;
+    const sizes = p.is_pizza ? U.SIZES.filter(([k]) => priceFor(p, k, S.settings) != null) : [];
+    const st = { size: 'grande', half: null, mode: 'inteira', b1: null, b2: null, obs: '', qty: 1 };
+    if (!sizes.some(([k]) => k === 'grande') && sizes.length) st.size = sizes[sizes.length - 1][0];
+
+    const cur = () => price(p, p.is_pizza ? st.size : null, st.mode === 'meia' ? st.half : null, st.b1, st.mode === 'meia' ? st.b2 : null);
+
+    function borderChips(which, sel) {
+      const comuns = S.borders.filter((b) => b.available && b.kind !== 'vulcao');
+      const vulcao = S.borders.filter((b) => b.available && b.kind === 'vulcao');
+      const chip = (b) => `<button class="opt-chip ${sel && sel.id === b.id ? 'on' : ''}" data-b="${which}" data-bid="${b.id}">${esc(b.name)} <small>+${money(b.price)}</small></button>`;
+      return `<div class="opts"><button class="opt-chip ${!sel ? 'on' : ''}" data-b="${which}" data-bid="">Sem borda</button>${comuns.map(chip).join('')}</div>
+        ${vulcao.length ? (st.size === 'grande'
+          ? `<p class="bk">Borda vulcão</p><div class="opts">${vulcao.map(chip).join('')}</div>`
+          : '<p class="muted small" style="margin:8px 0 0">Borda vulcão só na pizza grande.</p>') : ''}`;
+    }
+
+    function tipHTML() {
+      if (st.mode !== 'meia' || !st.half || st.size === 'broto' || isSweet(p) === isSweet(st.half)) return '';
+      const a = price(p, 'broto', null, null, null), b = price(st.half, 'broto', null, null, null);
+      const sweet = isSweet(p) ? p : st.half, salty = isSweet(p) ? st.half : p;
+      return `<div class="tip"><b>💡 Dica da casa</b>
+        <span>Meia doce e meia salgada na mesma pizza? Fica melhor pedir <b>1 broto de ${esc(salty.name)}</b> e <b>1 broto de ${esc(sweet.name)}</b>: cada sabor vem inteiro e sem misturar.</span>
+        <button class="btn green sm" id="twoBrotos">Trocar por 2 brotos · ${money((a + b) * st.qty)}</button></div>`;
+    }
+
+    function render() {
+      const borders = p.is_pizza && S.borders.some((b) => b.available);
+      if (st.size !== 'grande') { if (st.b1 && st.b1.kind === 'vulcao') st.b1 = null; if (st.b2 && st.b2.kind === 'vulcao') st.b2 = null; }
+      if (st.mode !== 'meia') st.b2 = null;
+      const u = cur();
+      const half = st.mode === 'meia';
+      const extra = Number(S.settings.broto_half_extra || 0);
+      openSheet(`
+        <div class="sheet-head">
+          <div style="display:flex;gap:12px;align-items:center;min-width:0">${thumb(p)}<h3>${esc(title(p))}</h3></div>
+          <button class="x" data-close aria-label="Fechar">×</button>
+        </div>
+        ${p.description ? `<p class="muted" style="margin:6px 0 0">${esc(p.description)}</p>` : ''}
+
+        ${sizes.length > 1 ? `<div class="sec"><b>Tamanho</b>
+          <div class="seg">${sizes.map(([k, n]) => `<button data-size="${k}" class="${st.size === k ? 'on' : ''}">${n}<small>${money(priceFor(p, k, S.settings))}</small></button>`).join('')}</div></div>` : ''}
+
+        ${p.is_pizza && p.allow_half ? `<div class="sec"><b>Sabores</b>
+          <div class="seg"><button data-mode="inteira" class="${!half ? 'on' : ''}">Inteira</button><button data-mode="meia" class="${half ? 'on' : ''}">Meio a meio</button></div>
+          ${half ? `<div class="halves">
+            <div class="half"><span class="tag">1ª metade</span><span class="who"><b>${esc(p.name)}</b><span>${money(priceFor(p, st.size, S.settings))}</span></span></div>
+            ${st.half
+              ? `<button class="half" id="pickHalf"><span class="tag">2ª metade</span><span class="who"><b>${esc(st.half.name)}</b><span>${money(priceFor(st.half, st.size, S.settings))}</span></span><span class="chg">Trocar</span></button>`
+              : '<button class="half pick" id="pickHalf">+ Escolher o 2º sabor</button>'}
+            <p class="muted small" style="margin:2px 0 0">Vale o preço do sabor mais caro${st.size === 'broto' && extra ? `, + ${money(extra)} na broto meio a meio` : ''}.</p>
+          </div>` : ''}</div>` : ''}
+
+        ${tipHTML()}
+
+        ${borders ? (half
+          ? `<div class="sec"><b>Borda da 1ª metade <small>· ${esc(p.name)}</small></b>${borderChips(1, st.b1)}</div>
+             <div class="sec"><b>Borda da 2ª metade <small>· ${st.half ? esc(st.half.name) : '2º sabor'}</small></b>${borderChips(2, st.b2)}
+             <p class="muted small" style="margin:8px 0 0">Com bordas diferentes, vale o preço da borda mais cara.</p></div>`
+          : `<div class="sec"><b>Borda recheada <small>(opcional)</small></b>${borderChips(1, st.b1)}</div>`) : ''}
+
+        <label class="field sec"><span>Alguma observação?</span>
+          <textarea id="obs" rows="2" maxlength="140" placeholder="${p.is_pizza ? 'Ex.: sem cebola, bem assada' : 'Ex.: bem gelada'}">${esc(st.obs)}</textarea></label>
+        <div class="row-between">
+          <div class="stepper"><button data-q="-1" aria-label="Menos">−</button><b>${st.qty}</b><button data-q="1" aria-label="Mais">+</button></div>
+          <button class="btn primary" id="addBtn" ${half && !st.half ? 'disabled' : ''}>${half && !st.half ? 'Escolha o 2º sabor' : 'Adicionar · ' + money((u || 0) * st.qty)}</button>
+        </div>`);
+      const keepObs = () => { st.obs = $('#obs').value; };
+      $$('[data-size]').forEach((b) => b.onclick = () => { keepObs(); st.size = b.dataset.size; if (st.half && priceFor(st.half, st.size, S.settings) == null) st.half = null; render(); });
+      $$('[data-mode]').forEach((b) => b.onclick = () => { keepObs(); st.mode = b.dataset.mode; if (st.mode === 'meia' && !st.half) openPicker(); else render(); });
+      $$('[data-b]').forEach((b) => b.onclick = () => { keepObs(); st['b' + b.dataset.b] = b.dataset.bid ? borderById(b.dataset.bid) : null; render(); });
+      $$('[data-q]').forEach((b) => b.onclick = () => { keepObs(); st.qty = Math.min(20, Math.max(1, st.qty + Number(b.dataset.q))); render(); });
+      if ($('#pickHalf')) $('#pickHalf').onclick = () => { keepObs(); openPicker(); };
+      if ($('#twoBrotos')) $('#twoBrotos').onclick = () => {
+        keepObs();
+        [p, st.half].forEach((f) => addToCart({ product_id: f.id, size: 'broto', half_id: null, border_id: null, border2_id: null,
+          name: f.name, half: null, border: null, border2: null, unit: price(f, 'broto', null, null, null), qty: st.qty, obs: st.obs.trim() }));
+        closeSheet();
+        toast('2 brotos adicionadas ao carrinho');
+      };
+      $('#addBtn').onclick = () => {
+        keepObs();
+        const unit = cur();
+        if (unit == null) return;
+        const h = half ? st.half : null;
+        addToCart({ product_id: p.id, size: p.is_pizza ? st.size : null, half_id: h ? h.id : null,
+          border_id: st.b1 ? st.b1.id : null, border2_id: h && st.b2 ? st.b2.id : null,
+          name: p.name, half: h ? h.name : null, border: U.borderName(st.b1), border2: h ? U.borderName(st.b2) : null,
+          unit, qty: st.qty, obs: st.obs.trim() });
+        closeSheet();
+        toast('Adicionado ao carrinho');
+      };
+    }
+
+    // lista com busca para escolher a 2ª metade
+    function openPicker() {
+      let q = '';
+      const options = pizzas().filter((x) => x.allow_half && x.id !== p.id && priceFor(x, st.size, S.settings) != null);
+      openSheet(`
+        <div class="picker-head"><button class="backbtn" id="pkBack" aria-label="Voltar">←</button><div><h3>Escolha o 2º sabor</h3><span class="muted small">½ ${esc(p.name)} + ½ ? · ${SIZE_NAME[st.size]}</span></div></div>
+        <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="pkQ" type="search" placeholder="Buscar sabor, ingrediente ou nº" autocomplete="off" aria-label="Buscar sabor"></label>
+        <div class="list picker-list" id="pkList"></div>`);
+      $('#sheet').style.minHeight = '85vh';
+      const paint = () => {
+        const nq = norm(q.trim());
+        const list = options.filter((x) => matches(x, nq));
+        $('#pkList').innerHTML = list.length
+          ? list.map((x) => rowHTML(x, `Meio a meio: ${money(price(p, st.size, x, null, null))}${isSweet(x) !== isSweet(p) ? ' · <i>doce + salgada</i>' : ''}`, `data-pick="${x.id}"`)).join('')
+          : '<p class="empty">Nenhum sabor encontrado.</p>';
+      };
+      paint();
+      $('#pkQ').addEventListener('input', (e) => { q = e.target.value; paint(); });
+      $('#pkBack').onclick = () => { if (!st.half) st.mode = 'inteira'; render(); };
+      $('#pkList').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-pick]');
+        if (!b) return;
+        st.half = byId(b.dataset.pick);
+        st.mode = 'meia';
+        render();
+      });
+      if (window.matchMedia('(min-width: 640px)').matches) $('#pkQ').focus();
+    }
+    render();
+  }
+
+  /* ---------- carrinho ---------- */
+  function renderCartBar() {
+    const n = cartCount();
+    const b = $('#cartBar');
+    b.hidden = !n || $('#viewMenu').hidden;
+    b.innerHTML = `<span class="n">${n}</span><span>Ver carrinho</span><b>${money(cartSubtotal())}</b>`;
+  }
+  $('#cartBar').onclick = () => {
+    if (!S.session) openAuth(() => openCart(), 'Para ver o carrinho e finalizar, entre ou crie sua conta. Seus itens continuam salvos.');
+    else openCart();
+  };
+
+  function openCart() {
+    if (!S.cart.length) { closeSheet(); return; }
+    if (!S.session) { openAuth(() => openCart()); return; }
+    const pr = S.profile || {};
+    const z = myZone();
+    const d = S.draft || (S.draft = { fulfillment: 'entrega', payment: 'pix', change: '', notes: '' });
+    const ent = d.fulfillment === 'entrega';
+    const sub = cartSubtotal(), f = fee(d.fulfillment);
+    const canDeliver = hasAddress(pr) && !!z;
+    const opt = (v, t, s) => `<label class="opt"><input type="radio" name="pay" value="${v}" ${d.payment === v ? 'checked' : ''}><div><b>${t}</b><span>${s}</span></div></label>`;
+    const dr = drinks();
+    const hasDrink = S.cart.some((i) => { const p = byId(i.product_id); return p && isDrink(p); });
+
+    let addrBox = '';
+    if (ent) {
+      if (!hasAddress(pr)) addrBox = '<div class="box warnbox"><div><b>Falta o endereço de entrega</b><span>Cadastre uma vez e ele fica salvo na sua conta.</span></div><button class="btn primary sm" id="editAddr">Cadastrar</button></div>';
+      else if (!z) addrBox = `<div class="box warnbox"><div><b>Ainda não entregamos no seu bairro pelo site</b><span>${esc(pr.district || 'Bairro não informado')}. Escolha "Retirar no balcão"${S.settings.whatsapp ? ' ou fale com a pizzaria no WhatsApp' : ''}.</span></div><button class="btn ghost sm" id="editAddr">Alterar</button></div>`;
+      else addrBox = `<div class="box"><div><span>Entregar em · taxa ${money(z.fee)}</span><b>${esc(formatAddress(pr, z))}</b></div><button class="btn ghost sm" id="editAddr">Alterar</button></div>`;
+    } else if (S.settings.store_address) {
+      addrBox = `<div class="box"><div><span>Retirar em</span><b>${esc(S.settings.store_address)}</b></div></div>`;
+    }
+
+    openSheet(`
+      <div class="sheet-head"><h3>Seu pedido</h3><button class="x" data-close aria-label="Fechar">×</button></div>
+      <div class="cart-items">${S.cart.map((i, idx) => `
+        <div class="ci">
+          <div class="ci-txt"><b>${esc(itemLabel(i))}</b>${borderLabel(i) ? `<span>Borda: ${esc(borderLabel(i))}</span>` : ''}${i.obs ? `<span>Obs.: ${esc(i.obs)}</span>` : ''}<em>${money(i.unit * i.qty)}</em></div>
+          <div class="stepper sm"><button data-ci="${idx}" data-d="-1" aria-label="Menos">−</button><b>${i.qty}</b><button data-ci="${idx}" data-d="1" aria-label="Mais">+</button></div>
+        </div>`).join('')}</div>
+      <button class="btn ghost sm" data-close style="margin-top:8px">+ Adicionar mais itens</button>
+
+      ${dr.length && !hasDrink ? `<div class="sec upsell"><b>Vai uma bebida?</b><div class="opts">${dr.slice(0, 8).map((p) => `<button class="opt-chip" data-drink="${p.id}">${esc(p.name)} <small>+${money(p.price)}</small></button>`).join('')}</div></div>` : ''}
+
+      <div class="sec"><b>Como quer receber?</b>
+        <div class="seg"><button data-ful="entrega" class="${ent ? 'on' : ''}">Entrega</button><button data-ful="retirada" class="${!ent ? 'on' : ''}">Retirar no balcão</button></div>
+        ${addrBox}
+        <div class="box"><div><span>Pedido em nome de</span><b>${esc(pr.name || '')} · ${esc(U.fmtPhone(pr.phone || ''))}</b></div><button class="btn ghost sm" id="editMe">Alterar</button></div>
+      </div>
+
+      <fieldset class="pay sec"><b style="display:block;font-size:14px;margin-bottom:0">Como vai pagar?</b>
+        ${opt('pix', 'Pix', 'Pague agora pelo site, com QR Code')}
+        ${opt('cartao', 'Cartão', ent ? 'Crédito ou débito na maquininha, na entrega' : 'Crédito ou débito no balcão')}
+        ${opt('dinheiro', 'Dinheiro', ent ? 'Pague ao motoboy' : 'Pague no balcão')}
+      </fieldset>
+      ${d.payment === 'dinheiro' ? `<label class="field"><span>Troco para quanto? (opcional)</span><input id="fChange" inputmode="decimal" placeholder="Ex.: 100" value="${esc(d.change)}"></label>` : ''}
+      <label class="field"><span>Observações do pedido (opcional)</span>
+        <textarea id="fNotes" rows="2" maxlength="200" placeholder="Ex.: interfone quebrado, ligar ao chegar">${esc(d.notes)}</textarea></label>
+      <div class="sum">
+        <div><span>Subtotal</span><span>${money(sub)}</span></div>
+        <div><span>${ent ? 'Entrega' + (z ? ` (${esc(z.name)})` : '') : 'Retirada'}</span><span>${ent ? (canDeliver ? (f > 0 ? money(f) : 'grátis') : '—') : 'grátis'}</span></div>
+        <div class="tot"><span>Total</span><span>${money(sub + f)}</span></div>
+      </div>
+      <p class="err" id="cartErr" hidden></p>
+      <button class="btn primary block" id="placeBtn" ${S.settings.is_open && (!ent || canDeliver) ? '' : 'disabled'}>Fazer pedido · ${money(sub + f)}</button>
+      ${S.settings.is_open ? '' : '<p class="note">A pizzaria está fechada agora.</p>'}`);
+
+    const keep = () => { d.notes = $('#fNotes').value; if ($('#fChange')) d.change = $('#fChange').value; };
+    $$('[data-ci]').forEach((b) => b.onclick = () => {
+      keep();
+      const idx = Number(b.dataset.ci);
+      S.cart[idx].qty = Math.min(20, S.cart[idx].qty + Number(b.dataset.d));
+      if (S.cart[idx].qty < 1) S.cart.splice(idx, 1);
+      saveCart();
+      openCart();
+    });
+    $$('[data-drink]').forEach((b) => b.onclick = () => {
+      keep();
+      const p = byId(b.dataset.drink);
+      addToCart({ product_id: p.id, size: null, half_id: null, border_id: null, border2_id: null, name: p.name, half: null, border: null, border2: null, unit: Number(p.price), qty: 1, obs: '' });
+      openCart();
+    });
+    $$('[data-ful]').forEach((b) => b.onclick = () => { keep(); d.fulfillment = b.dataset.ful; openCart(); });
+    $$('input[name=pay]').forEach((r) => r.onchange = () => { keep(); d.payment = r.value; openCart(); });
+    if ($('#editAddr')) $('#editAddr').onclick = () => { keep(); openProfile(() => openCart(), true); };
+    $('#editMe').onclick = () => { keep(); openProfile(() => openCart()); };
+    $('#placeBtn').onclick = () => { keep(); placeOrder(); };
+  }
+
+  function cartError(msg) { const e = $('#cartErr'); e.textContent = msg; e.hidden = false; e.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+
+  async function placeOrder() {
+    const d = S.draft;
+    const total = cartSubtotal() + fee(d.fulfillment);
+    if (!S.settings.is_open) return cartError('A pizzaria está fechada no momento.');
+    let change = null;
+    if (d.payment === 'dinheiro' && String(d.change).trim()) {
+      change = parseMoney(d.change);
+      if (!(change > 0)) return cartError('Valor de troco inválido.');
+      if (change < total) return cartError('O troco precisa ser maior que o total (' + money(total) + ').');
+    }
+    const btn = $('#placeBtn');
+    btn.disabled = true;
+    btn.textContent = 'Enviando pedido…';
+    try {
+      const order = await api.placeOrder({
+        items: S.cart.map((i) => ({ product_id: i.product_id, size: i.size, half_id: i.half_id || null, border_id: i.border_id || null, border2_id: i.border2_id || null, qty: i.qty, obs: i.obs || '' })),
+        fulfillment: d.fulfillment, payment: d.payment, change_for: change, notes: d.notes.trim(),
+      });
+      S.cart = [];
+      saveCart();
+      S.draft = null;
+      closeSheet();
+      location.hash = '#pedido/' + order.id;
+    } catch (e) {
+      cartError(e.message);
+      btn.disabled = false;
+      btn.textContent = 'Fazer pedido';
+    }
+  }
+
+  /* ---------- campos de cadastro (cadastro e "Minha conta") ---------- */
+  function zoneOptions(sel, other) {
+    const byCity = new Map();
+    S.zones.forEach((z) => { if (!byCity.has(z.city)) byCity.set(z.city, []); byCity.get(z.city).push(z); });
+    return `<option value="">Selecione o bairro…</option>` +
+      [...byCity.entries()].map(([c, list]) => `<optgroup label="${esc(c)}">${list.map((z) => `<option value="${z.id}" ${Number(sel) === z.id ? 'selected' : ''}>${esc(z.name)}${z.is_condo ? ' (condomínio)' : ''}</option>`).join('')}</optgroup>`).join('') +
+      `<option value="outro" ${other ? 'selected' : ''}>Meu bairro não está na lista</option>`;
+  }
+  function profileFields(p) {
+    p = p || {};
+    const zoneOk = p.zone_id && S.zones.some((z) => z.id === Number(p.zone_id));
+    const other = !zoneOk && !!p.district;
+    return `
+      <div class="grid2">
+        <label class="field"><span>Nome</span><input id="pName" maxlength="60" autocomplete="name" value="${esc(p.name)}"></label>
+        <label class="field"><span>WhatsApp</span><input id="pPhone" maxlength="20" inputmode="tel" autocomplete="tel" placeholder="(15) 99999-9999" value="${esc(p.phone)}"></label>
+      </div>
+      <p class="legend">Endereço de entrega</p>
+      <label class="field"><span>CEP <small>(opcional)</small></span><input id="pCep" maxlength="9" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" value="${esc(p.cep)}"><small id="cepMsg">Preenche a rua e o bairro sozinho</small></label>
+      <label class="field"><span>Bairro ou condomínio</span><select id="pZone">${zoneOptions(zoneOk ? p.zone_id : null, other)}</select></label>
+      <label class="field" id="otherWrap" ${other ? '' : 'hidden'}><span>Qual é o seu bairro?</span><input id="pDistrict" maxlength="60" value="${esc(other ? p.district : '')}"><small>Por enquanto não entregamos aí pelo site, mas você pode retirar no balcão.</small></label>
+      <div class="grid-addr">
+        <label class="field"><span>Rua</span><input id="pStreet" maxlength="100" autocomplete="address-line1" value="${esc(p.street)}"></label>
+        <label class="field"><span>Número</span><input id="pNumber" maxlength="10" value="${esc(p.number)}"></label>
+      </div>
+      <label class="field"><span>Complemento <small>(opcional)</small></span><input id="pComp" maxlength="60" placeholder="Apto, bloco, quadra e lote…" value="${esc(p.complement)}"></label>
+      <label class="field"><span>Ponto de referência <small>(opcional)</small></span><input id="pRef" maxlength="80" value="${esc(p.reference)}"></label>`;
+  }
+  function bindAddress() {
+    const sel = $('#pZone');
+    sel.onchange = () => { $('#otherWrap').hidden = sel.value !== 'outro'; };
+    const cep = $('#pCep');
+    cep.addEventListener('input', async () => {
+      const d = onlyDigits(cep.value);
+      cep.value = d.length > 5 ? d.slice(0, 5) + '-' + d.slice(5, 8) : d;
+      if (d.length !== 8) return;
+      $('#cepMsg').textContent = 'Buscando endereço…';
+      const r = await U.lookupCep(d);
+      if (!r) { $('#cepMsg').textContent = 'CEP não encontrado. Preencha à mão.'; return; }
+      if (r.street) $('#pStreet').value = r.street;
+      $('#cepMsg').textContent = `${r.city} - ${r.uf}`;
+      const nb = norm(r.district), nc = norm(r.city);
+      const z = S.zones.find((x) => norm(x.name) === nb && norm(x.city) === nc) || S.zones.find((x) => nb && norm(x.name) === nb);
+      if (z) { sel.value = String(z.id); $('#otherWrap').hidden = true; }
+      else if (r.district) { sel.value = 'outro'; $('#otherWrap').hidden = false; $('#pDistrict').value = r.district; }
+      $('#pNumber').focus();
+    });
+  }
+  function readProfile() {
+    const zv = $('#pZone').value;
+    const z = zv && zv !== 'outro' ? S.zones.find((x) => x.id === Number(zv)) : null;
+    return { name: $('#pName').value.trim(), phone: $('#pPhone').value.trim(), cep: $('#pCep').value.trim(),
+      street: $('#pStreet').value.trim(), number: $('#pNumber').value.trim(),
+      district: z ? z.name : (zv === 'outro' ? $('#pDistrict').value.trim() : ''), zone_id: z ? z.id : null,
+      complement: $('#pComp').value.trim(), reference: $('#pRef').value.trim() };
+  }
+  function validateProfile(p, needAddress) {
+    if (p.name.length < 2) return 'Informe seu nome.';
+    const ph = onlyDigits(p.phone);
+    if (ph.length < 10 || ph.length > 13) return 'Informe seu WhatsApp com DDD.';
+    if (needAddress && (!p.street || !p.number || !p.district)) return 'Preencha bairro, rua e número do endereço de entrega.';
+    return null;
+  }
+
+  /* ---------- login / cadastro ---------- */
+  function openAuth(after, note) {
+    let mode = 'signup';
+    const render = () => {
+      openSheet(`
+        <div class="sheet-head"><h3>${mode === 'signup' ? 'Criar conta' : 'Entrar'}</h3><button class="x" data-close aria-label="Fechar">×</button></div>
+        ${note ? `<p class="muted" style="margin:4px 0 0">${esc(note)}</p>` : ''}
+        <div class="tabs2"><button data-m="signup" class="${mode === 'signup' ? 'on' : ''}">Sou novo aqui</button><button data-m="login" class="${mode === 'login' ? 'on' : ''}">Já tenho conta</button></div>
+        <form id="authForm" novalidate>
+          ${mode === 'signup' ? profileFields({}) + '<p class="legend">Acesso</p>' : ''}
+          <label class="field"><span>E-mail</span><input id="aEmail" type="email" autocomplete="email"></label>
+          <label class="field"><span>Senha</span><input id="aPass" type="password" autocomplete="${mode === 'signup' ? 'new-password' : 'current-password'}">${mode === 'signup' ? '<small>Mínimo de 6 caracteres.</small>' : ''}</label>
+          <p class="err" id="authErr" hidden></p>
+          <button class="btn primary block" style="margin-top:18px" id="authBtn">${mode === 'signup' ? 'Criar conta e continuar' : 'Entrar'}</button>
+          ${api.demo ? '<p class="muted small center">Demonstração: qualquer e-mail e senha (6+ caracteres) funcionam.</p>' : ''}
+        </form>`);
+      $$('[data-m]').forEach((b) => b.onclick = () => { mode = b.dataset.m; render(); });
+      if (mode === 'signup') bindAddress();
+      $('#authForm').onsubmit = submit;
+    };
+    async function submit(e) {
+      e.preventDefault();
+      const err = $('#authErr');
+      const fail = (m) => { err.textContent = m; err.hidden = false; err.scrollIntoView({ behavior: 'smooth', block: 'center' }); };
+      err.hidden = true;
+      const email = $('#aEmail').value.trim(), password = $('#aPass').value;
+      let profile = null;
+      if (mode === 'signup') {
+        profile = readProfile();
+        const v = validateProfile(profile, true);
+        if (v) return fail(v);
+      }
+      if (!/^\S+@\S+\.\S+$/.test(email)) return fail('Informe um e-mail válido.');
+      if (password.length < 6) return fail('A senha precisa ter pelo menos 6 caracteres.');
+      const btn = $('#authBtn');
+      btn.disabled = true;
+      try {
+        if (mode === 'signup') await api.signUp({ email, password, profile });
+        else await api.signIn({ email, password });
+        S.session = await api.getSession();
+        S.profile = await api.getProfile();
+        renderTop();
+        toast(mode === 'signup' ? 'Conta criada!' : 'Pronto, você entrou!');
+        if (S.session && !S.profile) openProfile(after);
+        else if (after) after(); else closeSheet();
+      } catch (ex) {
+        fail(ex.message);
+        btn.disabled = false;
+      }
+    }
+    render();
+  }
+
+  /* ---------- minha conta ---------- */
+  function openProfile(after, addrFocus) {
+    if (!S.session) return openAuth(after);
+    openSheet(`
+      <div class="sheet-head"><h3>${after ? 'Seus dados' : 'Minha conta'}</h3><button class="x" data-close aria-label="Fechar">×</button></div>
+      <p class="muted small" style="margin:4px 0 0">${esc(S.session.user.email)}</p>
+      <form id="profForm" novalidate>
+        ${profileFields(S.profile)}
+        <p class="err" id="profErr" hidden></p>
+        <button class="btn primary block" style="margin-top:18px">Salvar</button>
+      </form>
+      ${after ? '' : '<button class="btn ghost block" id="btnOut" style="margin-top:10px">Sair da conta</button>'}`);
+    bindAddress();
+    if (addrFocus) setTimeout(() => $('#pCep').scrollIntoView({ block: 'center' }), 50);
+    $('#profForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const p = readProfile();
+      const v = validateProfile(p, false);
+      const err = $('#profErr');
+      if (v) { err.textContent = v; err.hidden = false; return; }
+      try {
+        S.profile = await api.saveProfile(p);
+        toast('Dados salvos');
+        if (after) after(); else closeSheet();
+      } catch (ex) { err.textContent = ex.message; err.hidden = false; }
+    };
+    if ($('#btnOut')) $('#btnOut').onclick = async () => {
+      await api.signOut();
+      S.session = null; S.profile = null; S.draft = null;
+      renderTop();
+      closeSheet();
+      location.hash = '';
+      toast('Você saiu da sua conta.');
+    };
+  }
+
+  /* ---------- acompanhar pedido ---------- */
+  const STEPS = {
+    entrega: [['novo', 'Pedido recebido'], ['preparo', 'Em preparo'], ['entrega', 'Saiu para entrega'], ['concluido', 'Entregue']],
+    retirada: [['novo', 'Pedido recebido'], ['preparo', 'Em preparo'], ['entrega', 'Pronto para retirada'], ['concluido', 'Retirado']],
+  };
+  const STATUS_TXT = { novo: 'Recebido', preparo: 'Em preparo', entrega: 'A caminho / pronto', concluido: 'Concluído', cancelado: 'Cancelado' };
+  const fmtWhen = (iso) => new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  function payLabel(o) {
+    if (o.payment_method === 'pix') return o.payment_status === 'pago' ? 'Pix (pago)' : 'Pix';
+    if (o.payment_method === 'cartao') return 'Cartão ' + (o.fulfillment === 'entrega' ? 'na entrega' : 'no balcão');
+    return 'Dinheiro' + (o.change_for ? ' (troco para ' + money(o.change_for) + ')' : '');
+  }
+  function needLogin(box, then) {
+    box.innerHTML = '<div class="card center" style="margin-top:24px"><p>Entre na sua conta para ver seus pedidos.</p><button class="btn primary" id="needIn">Entrar</button></div>';
+    $('#needIn').onclick = () => openAuth(() => { closeSheet(); then(); });
+  }
+
+  async function showOrder(id) {
+    const box = $('#orderBox');
+    if (!S.session) return needLogin(box, () => showOrder(id));
+    box.innerHTML = '<p class="loading">Carregando pedido…</p>';
+    const load = async () => {
+      const o = await api.getOrder(id);
+      if (location.hash !== '#pedido/' + id) return;
+      if (!o) { box.innerHTML = '<a class="back" href="#">← Voltar ao cardápio</a><div class="card center">Pedido não encontrado.</div>'; return; }
+      renderOrder(o);
+    };
+    try { await load(); } catch (e) { box.innerHTML = `<div class="card alert" style="margin-top:24px">${esc(e.message)}</div>`; return; }
+    S.unsub = api.onOrder(id, () => load().catch(() => {}));
+    S.poll = setInterval(() => load().catch(() => {}), 20000);
+  }
+
+  function renderOrder(o) {
+    const steps = STEPS[o.fulfillment];
+    const idx = steps.findIndex((s) => s[0] === o.status);
+    const s = S.settings;
+    $('#orderBox').innerHTML = `
+      <a class="back" href="#">← Voltar ao cardápio</a>
+      <div class="card order-head"><div><span class="muted small">Pedido</span><h2>#${o.id}</h2></div><span class="muted small">${fmtWhen(o.created_at)}</span></div>
+      ${o.status === 'cancelado'
+        ? '<div class="card alert">Este pedido foi cancelado. Em caso de dúvida, fale com a pizzaria.</div>'
+        : `<div class="card"><ol class="steps">${steps.map((st, i) => `<li class="${i < idx || o.status === 'concluido' ? 'done' : i === idx ? 'now' : ''}"><i></i><span>${st[1]}</span></li>`).join('')}</ol></div>`}
+      ${pixBlock(o)}
+      <div class="card"><h3>Itens</h3>
+        ${o.items.map((i) => `<div class="line"><span>${i.qty}× ${esc(itemLabel(i))}${borderLabel(i) ? `<small>Borda: ${esc(borderLabel(i))}</small>` : ''}${i.obs ? `<small>Obs.: ${esc(i.obs)}</small>` : ''}</span><span>${money(i.unit * i.qty)}</span></div>`).join('')}
+        <div class="line sub"><span>Subtotal</span><span>${money(o.subtotal)}</span></div>
+        <div class="line sub"><span>${o.fulfillment === 'entrega' ? 'Entrega' : 'Retirada'}</span><span>${Number(o.delivery_fee) > 0 ? money(o.delivery_fee) : 'grátis'}</span></div>
+        <div class="line tot"><span>Total</span><span>${money(o.total)}</span></div>
+        <p class="muted small" style="margin:10px 0 0">${esc(payLabel(o))} · ${o.fulfillment === 'entrega' ? esc(o.address) : 'Retirada no balcão' + (s.store_address ? ': ' + esc(s.store_address) : '')}</p>
+      </div>
+      ${s.whatsapp ? `<a class="btn ghost block" target="_blank" rel="noopener" href="${waLink(s.whatsapp, 'Olá! Sobre o meu pedido #' + o.id + '.')}">Falar com a pizzaria no WhatsApp</a>` : ''}
+      <div style="height:40px"></div>`;
+    const copy = $('#copyPix');
+    if (copy) copy.onclick = async () => {
+      const t = $('#pixCode');
+      try { await navigator.clipboard.writeText(t.value); } catch (e) { t.select(); document.execCommand('copy'); }
+      toast('Código Pix copiado! Cole no app do seu banco.');
+    };
+  }
+
+  function pixBlock(o) {
+    if (o.payment_method !== 'pix' || o.status === 'cancelado') return '';
+    if (o.payment_status === 'pago') return '<div class="card paid">✓ Pagamento Pix confirmado pela pizzaria</div>';
+    const s = S.settings;
+    if (!s.pix_key) return '<div class="card warn">A pizzaria vai te enviar os dados do Pix pelo WhatsApp.</div>';
+    const code = pixPayload({ key: s.pix_key, name: s.pix_name || s.store_name, city: s.pix_city, amount: o.total, txid: 'PED' + o.id });
+    let img = '';
+    try { const qr = window.qrcode(0, 'M'); qr.addData(code); qr.make(); img = `<img alt="QR Code Pix" src="${qr.createDataURL(6, 12)}">`; } catch (e) { /* segue com copia e cola */ }
+    return `<div class="card pix"><h3>Pague com Pix · ${money(o.total)}</h3>
+      <p class="muted small" style="margin:0">Escaneie o QR Code ou copie o código e cole em "Pix Copia e Cola" no app do seu banco.</p>
+      ${img ? `<div class="qr">${img}</div>` : ''}
+      <textarea id="pixCode" readonly rows="3" aria-label="Código Pix copia e cola">${esc(code)}</textarea>
+      <button class="btn primary block" id="copyPix">Copiar código Pix</button>
+      <p class="muted small" style="margin:10px 0 0">Depois de pagar, a pizzaria confirma o recebimento e esta tela atualiza sozinha.</p></div>`;
+  }
+
+  /* ---------- meus pedidos ---------- */
+  async function showMine() {
+    const box = $('#mineBox');
+    if (!S.session) return needLogin(box, showMine);
+    box.innerHTML = '<p class="loading">Carregando…</p>';
+    try {
+      const list = await api.myOrders();
+      box.innerHTML = `<a class="back" href="#">← Voltar ao cardápio</a><h2 style="font-family:Fraunces,Georgia,serif;margin:0 0 14px">Meus pedidos</h2>
+        <div class="olist">${list.length ? list.map((o) => `
+          <a class="card orow" href="#pedido/${o.id}"><div><b>Pedido #${o.id}</b><div class="muted small">${fmtWhen(o.created_at)} · ${money(o.total)}</div></div>
+          <span class="badge ${o.status}">${STATUS_TXT[o.status]}</span></a>`).join('') : '<p class="empty">Você ainda não fez pedidos.</p>'}</div>`;
+    } catch (e) { box.innerHTML = `<div class="card alert" style="margin-top:24px">${esc(e.message)}</div>`; }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
