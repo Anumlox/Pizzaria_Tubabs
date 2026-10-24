@@ -10,6 +10,6 @@
  * ATENÇÃO: nunca coloque aqui a chave "service_role" / "secret".
  */
 window.PIZZARIA_CONFIG = {
-  SUPABASE_URL: '',
-  SUPABASE_ANON_KEY: ''
+  SUPABASE_URL: 'https://unzjpvqdvzfmbourmwkn.supabase.co',
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuempwdnFkdnpmbWJvdXJtd2tuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4MzE0OTIsImV4cCI6MjEwODQwNzQ5Mn0.746SExIljzYYb-P-3hr9trN-pigoB1THHYg2dvx-oi8'
 };
